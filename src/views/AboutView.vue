@@ -29,17 +29,23 @@ export default {
 </script>
 
 <style scoped>
+.about {
+  text-align: center; /* Zentriert den Text horizontal */
+  margin-top: 50px; /* Abstand nach oben */
+}
+
 .image-container {
-  text-align: center;
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  align-items: center; /* Zentriert die Inhalte horizontal */
+  gap: 30px; /* Abstand zwischen den Elementen */
+  margin-top: 20px;
 }
 
 figure {
   display: inline-block;
   margin: 0;
+  text-align: center; /* Zentriert die Inhalte innerhalb des Figures */
 }
 
 img {
@@ -50,14 +56,18 @@ img {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.merkur-image {
-  width: 300px;
-  height: auto;
-}
-
 figcaption {
   margin-top: 8px;
   font-size: 0.9rem;
   color: #555;
+}
+
+iframe {
+  width: 80%; /* Reduziert die Breite des iframes für bessere Darstellung */
+  max-width: 600px;
+  height: 400px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 </style>

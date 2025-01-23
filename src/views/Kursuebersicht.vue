@@ -4,18 +4,39 @@
     <p>Hier findest du eine Übersicht aller verfügbaren Kurse.</p>
 
     <ul>
-      <li v-for="(kurs, index) in sortedKurse" :key="kurs.id" class="kurs-item">
-        <div @click="toggleDetails(index)" class="kurs-title">
-          <h2>{{ kurs.name }}</h2>
+      <li v-for="kurs in sortedKurse" :key="kurs.id" class="kurs-item">
+        <!-- Kurs-Titel und dynamischer Button -->
+        <div class="kurs-header">
+          <div @click="toggleDetails(kurs.id)" class="kurs-title">
+            <h2>{{ kurs.name }}</h2>
+            <!-- Pfeil-Icon -->
+            <span class="arrow-icon" :class="{ rotated: kurs.isOpen }">▼</span>
+          </div>
+          <button
+              :class="isAngemeldet(kurs.id) ? 'abmelden-button' : 'anmelden-button'"
+              @click.stop="toggleAnmeldung(kurs)"
+          >
+            {{ isAngemeldet(kurs.id) ? "Abmelden" : "Anmelden" }}
+          </button>
         </div>
 
+        <!-- Kursdetails -->
         <div v-if="kurs.isOpen" class="kurs-details">
           <p><strong>Kurzbeschreibung:</strong> {{ kurs.beschreibung }}</p>
-          <p><strong>Modulbeschreibung:</strong> {{ kurs.modul }}</p>
           <p><strong>Dozentin:</strong> {{ kurs.dozentin }}</p>
           <p><strong>Raum:</strong> {{ kurs.raum }}</p>
           <p><strong>Termin:</strong> {{ kurs.termin }}</p>
           <p><strong>Umfang:</strong> {{ kurs.umfang }}</p>
+          <p>
+            <a
+                v-if="kurs.modulbeschreibung"
+                :href="kurs.modulbeschreibung"
+                target="_blank"
+                class="modul-link"
+            >
+              Modulbeschreibung
+            </a>
+          </p>
         </div>
       </li>
     </ul>
@@ -23,31 +44,47 @@
 </template>
 
 <script>
+import { computed } from "vue";
+import { useKursStore } from "@/stores/useKursStore";
+
 export default {
-  name: 'Kursuebersicht',
-  data() {
+  name: "Kursuebersicht",
+  setup() {
+    const kursStore = useKursStore(); // Zugriff auf den Kurs-Store
+
+    const kurse = computed(() => kursStore.getAlleKurse); // Alle verfügbaren Kurse
+    const sortedKurse = computed(() =>
+        [...kurse.value].sort((a, b) => a.name.localeCompare(b.name))
+    ); // Alphabetisch sortiert
+
+    // Methoden
+    const toggleDetails = (kursId) => {
+      const kurs = kurse.value.find(k => k.id === kursId);
+      if (kurs) {
+        kurs.isOpen = !kurs.isOpen;
+      }
+    };
+
+    const toggleAnmeldung = (kurs) => {
+      if (kursStore.isAngemeldet(kurs.id)) {
+        kursStore.abmelden(kurs.id);
+        alert(`Du hast dich vom Kurs "${kurs.name}" abgemeldet.`);
+      } else {
+        kursStore.anmelden(kurs);
+        alert(`Du hast dich für den Kurs "${kurs.name}" angemeldet.`);
+      }
+    };
+
+    const isAngemeldet = (kursId) => kursStore.isAngemeldet(kursId);
+
     return {
-      // Liste der Kurse
-      kurse: [
-        { id: 1, name: 'Facetten des Merkur', beschreibung: 'SEMINAR: In diesem Kurs wird die spirituelle Vielseitigkeit des Merkur diskutiert', modul: '', dozentin: 'Freddy Mercury', raum: 'MER7', termin: 'Dienstag', umfang: '10 CP', isOpen: false },
-        { id: 2, name: 'Aqua Tofana', beschreibung: 'VORLESUNG: Eine Einführung von Dr. Spumaris in die Kunst des Gitfmischens', dozentin: 'Dr. Aphrodite Spumaris', modul: '', raum: 'VEN2', termin: 'Mittwoch', umfang: '7 CP', isOpen: false },
-        { id: 3, name: 'Ethik des Grauens', beschreibung: 'SEMINAR: In diesem Kurs bespricht Prof. Caesar die Abgründe der Menschheit - von Inzest bis Kannibalismus', dozentin: 'Prof. Dr. Gaia Caesar', modul: '', raum: 'ERD3', termin: 'Montag', umfang: '15 CP', isOpen: false },
-        // Weitere Kurse
-      ]
+      kurse,
+      sortedKurse,
+      toggleDetails,
+      toggleAnmeldung,
+      isAngemeldet,
     };
   },
-  computed: {
-    // Sortiert die Kurse alphabetisch
-    sortedKurse() {
-      return this.kurse.sort((a, b) => a.name.localeCompare(b.name));
-    }
-  },
-  methods: {
-    // Toggle der Anzeige für die Kursdetails
-    toggleDetails(index) {
-      this.kurse[index].isOpen = !this.kurse[index].isOpen;
-    }
-  }
 };
 </script>
 
@@ -77,6 +114,18 @@ ul {
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 8px;
+  text-align: left;
+}
+
+.kurs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kurs-title {
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 
@@ -84,7 +133,16 @@ ul {
   font-size: 1.5rem;
   color: #007BFF;
   margin: 0;
-  cursor: pointer;
+}
+
+.arrow-icon {
+  font-size: 1.2rem;
+  margin-left: 10px;
+  transition: transform 0.3s ease;
+}
+
+.arrow-icon.rotated {
+  transform: rotate(180deg);
 }
 
 .kurs-details {
@@ -95,5 +153,32 @@ ul {
 
 .kurs-details p {
   margin: 5px 0;
+}
+
+/* Dynamischer Button */
+.anmelden-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.anmelden-button:hover {
+  background-color: #218838;
+}
+
+.abmelden-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.abmelden-button:hover {
+  background-color: #c82333;
 }
 </style>
