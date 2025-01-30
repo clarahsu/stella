@@ -45,8 +45,8 @@ export default {
 .immatrikulation-button {
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #310A31;
-  color: #FFF;
+  background-color: #414770;
+  color: white;
   text-decoration: none;
   font-weight: bold;
   border-radius: 5px;

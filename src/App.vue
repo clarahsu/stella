@@ -99,7 +99,7 @@ html, body {
 
 .nav-links a {
   font-weight: bold;
-  color: #F4ECD6; /* Schriftfarbe */
+  color: white; /* Schriftfarbe */
   text-decoration: none;
   margin-right: 15px;
 }
@@ -122,7 +122,7 @@ html, body {
 .login-container button {
   padding: 6px 10px;
   background-color: #F4D35E;
-  color: #310A31;
+  color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -131,7 +131,7 @@ html, body {
 .logout-container button {
   padding: 6px 10px;
   background-color: #F4D35E;
-  color: #310A31;
+  color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;
