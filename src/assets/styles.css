@@ -1,0 +1,17 @@
+:root {
+    /* Farben */
+    --primary-color: #1a2b6dff;  /* Hauptfarbe */
+    --secondary-color: #5dade2ff; /* Sekundärfarbe */
+    --accent-color: #ffd700ff; /* Akzentfarbe*/
+    --accent-dark: #caaa02ff;
+    --text-color: white; /* Textfarbe normal */
+    --text-color-inv: #333333; /* Textfarbe dunkel */
+    --text-header: #333;
+    --background-color: white;
+
+    /* 🔤 Schriftgrößen */
+    --font-small: 14px;
+    --font-medium: 16px;
+    --font-large: 20px;
+    --font-title: 28px;
+}

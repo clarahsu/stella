@@ -131,7 +131,7 @@ ul {
 
 .kurs-title h2 {
   font-size: 1.5rem;
-  color: #007BFF;
+  color: var(--primary-color);
   margin: 0;
 }
 
@@ -157,8 +157,8 @@ ul {
 
 /* Dynamischer Button */
 .anmelden-button {
-  background-color: #28a745;
-  color: white;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
   border: none;
   padding: 8px 12px;
   border-radius: 5px;
@@ -166,7 +166,7 @@ ul {
 }
 
 .anmelden-button:hover {
-  background-color: #218838;
+  background-color: var(--secondary-color);
 }
 
 .abmelden-button {

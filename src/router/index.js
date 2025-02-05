@@ -4,6 +4,7 @@ import Kursuebersicht from '../views/Kursuebersicht.vue'
 import Stundenplan from '../views/Stundenplan.vue' // Importiere die Stundenplan-Komponente
 import { useAuthStore } from '@/stores/useAuthStore'
 import Immatrikulation from '../views/Immatrikulation.vue';
+import Dokumente from "@/views/Dokumente.vue";
 
 const routes = [
   {
@@ -27,6 +28,12 @@ const routes = [
     path: '/about',
     name: 'about',
     component: () => import('../views/AboutView.vue')
+  },
+  {
+    path: '/dokumente',
+    name: 'Dokumente',
+    component: Dokumente,
+    meta: { requiresAuth: true } // Authentifizierung für Kursübersicht
   },
   {
     path: '/immatrikulation',

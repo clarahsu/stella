@@ -7,10 +7,6 @@
     <p>Wenn du bereits ein Teil der Space University bist, kannst du dich über das Anmeldeformular einloggen.</p>
     <p>Wenn du dich an der Space University immatrikulieren möchtest, klicke auf den folgenden Button:</p>
     <router-link to="/immatrikulation" class="immatrikulation-button">Immatrikulation</router-link>
-    <!-- Logo mittig unten -->
-    <div class="logo-container">
-      <img src="@/assets/logo-hci.png" alt="Logo" class="logo" />
-    </div>
   </div>
 </template>
 
@@ -31,22 +27,11 @@ export default {
   padding: 20px; /* Innenabstand für Mobilgeräte */
 }
 
-.logo-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px; /* Abstand zwischen Logo und Überschrift */
-}
-
-.logo {
-  height: 200px; /* Logo-Größe anpassen */
-  object-fit: contain;
-}
-
 .immatrikulation-button {
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #414770;
-  color: white;
+  background-color: var(--accent-color);
+  color: var(--text-color-inv);
   text-decoration: none;
   font-weight: bold;
   border-radius: 5px;
@@ -55,6 +40,6 @@ export default {
 }
 
 .immatrikulation-button:hover {
-  background-color: #6A9A98; /* Leicht dunklerer Farbton für Hover-Effekt */
+  background-color: var(--accent-dark); /* Leicht dunklerer Farbton für Hover-Effekt */
 }
 </style>
