@@ -5,6 +5,9 @@ import Stundenplan from '../views/Stundenplan.vue' // Importiere die Stundenplan
 import { useAuthStore } from '@/stores/useAuthStore'
 import Immatrikulation from '../views/Immatrikulation.vue';
 import Dokumente from "@/views/Dokumente.vue";
+import Noteneingabe from '@/views/Noteneingabe.vue'
+import Notenüebersicht from '@/views/Notenuebersicht.vue'
+import Notenuebersicht from '@/views/Notenuebersicht.vue'
 
 const routes = [
   {
@@ -39,6 +42,18 @@ const routes = [
     path: '/immatrikulation',
     name: 'Immatrikulation',
     component: Immatrikulation,
+  },
+  {
+    path: '/noteneingabe',
+    name: 'Noteneingabe',
+    component: Noteneingabe,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/notenuebersicht',
+    name: 'Notenübersicht',
+    component: Notenuebersicht,
+    meta: { requiresAuth: true }
   },
 ]
 
