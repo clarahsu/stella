@@ -151,6 +151,15 @@ html, body {
   min-height: 100vh;
 }
 
+main {
+  flex: 1; /* Hauptinhalt nimmt den Platz zwischen Header und Footer ein */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* Abstand, damit die Maske nicht an den Rand gedrückt wird */
+}
+
 /* Menüleiste */
 .navbar {
   background-color: var(--primary-color);
@@ -332,12 +341,14 @@ html, body {
 /* Footer-Balken */
 .footer {
   background-color: var(--primary-color);
-  padding: 15px;
+  padding: 10px 0;
   text-align: center;
   color: var(--text-color);
   font-size: var(--font-small);
   width: 100%;
   margin-top: auto;
+  position: relative;
+  bottom: 0;
 }
 
 h1 {

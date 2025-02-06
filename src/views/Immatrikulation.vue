@@ -106,23 +106,31 @@ export default {
 <style scoped>
 .wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 120px);
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px 0; /* Abstand oben und unten */
   background-color: #f4f4f4;
+  box-sizing: border-box;
 }
+
 
 .container {
   background: white;
   padding: 20px 40px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  width: 400px;
+  width: 100%;
+  max-width: 500px;
   text-align: left;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 80px;
 }
 
 input, select, button {
