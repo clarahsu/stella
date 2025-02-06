@@ -23,7 +23,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - bei Abmeldung: Weiterleitung auf Startseite
 - Gestaltung Startseite
 - Profilseiten anlegen
-- Stundenplan selbst bearbeiten können
+- Stundenplanüberschneidungen
+- Stundenplanformat
 - Zusammenführen und Vereinheitlichen des Designs (Farben, Schriftgrößen)
 - Kurse anlegen
 - Prüfungen hinzufügen
