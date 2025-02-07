@@ -62,3 +62,67 @@ export default {
   },
 };
 </script>
+<style scoped>
+.profil-container {
+  background-color: var(--background-color);
+  color: var(--text-color-inv);
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profil-header {
+  text-align: center;
+}
+
+.profilbild {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  object-fit: cover;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: var(--font-medium);
+  margin-top: 10px;
+  width: 100%;
+}
+
+button:hover {
+  background-color: var(--accent-dark);
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid var(--secondary-color);
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: var(--font-medium);
+}
+
+textarea {
+  height: 150px;
+}
+
+input[type="file"] {
+  margin-top: 10px;
+}
+
+button.profilbild-button {
+  background-color: #ff4c4c;
+  color: white;
+}
+
+button.profilbild-button:hover {
+  background-color: #e60000;
+}
+</style>

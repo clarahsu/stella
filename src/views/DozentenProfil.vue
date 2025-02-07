@@ -49,3 +49,86 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.profil-container {
+  background-color: var(--background-color);
+  color: var(--text-color-inv);
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profil-header {
+  text-align: center;
+}
+
+.profilbild {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  object-fit: cover;
+}
+
+h1 {
+  font-size: var(--font-title);
+  color: var(--text-header);
+}
+
+p {
+  font-size: var(--font-medium);
+  color: var(--text-color-inv);
+  margin: 5px 0;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: var(--font-medium);
+  margin-top: 10px;
+  width: 100%;
+}
+
+button.kontaktieren {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+button.kontaktieren:hover {
+  background-color: var(--accent-dark);
+}
+
+button.bearbeiten {
+  background-color: #ddd;
+  color: #333;
+}
+
+button.bearbeiten:hover {
+  background-color: #bbb;
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .profil-container {
+    padding: 15px;
+  }
+
+  .profilbild {
+    width: 120px;
+    height: 120px;
+  }
+}
+</style>
