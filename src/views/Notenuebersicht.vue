@@ -15,7 +15,7 @@
         </tr>
       </tbody>
     </table>
-    <!-- Button with printer icon -->
+    
     <a href="https://example.com/path/to/your/Notenuebersicht.pdf" target="_blank">
       <button class="print-button">🖨️</button>
     </a>
@@ -30,7 +30,6 @@ export default {
     notenStore() {
       return useNotenStore();
     },
-    // Retrieve the grades for "space-studentin" from the store
     student() {
       return this.notenStore.studierende.find(
         (s) => s.name === "space-studentin"
@@ -38,7 +37,6 @@ export default {
     },
   },
   methods: {
-    // Get the grade for the given module
     getNote(modulId) {
       if (this.student) {
         return this.notenStore.getNotenVonMatrikel(this.student.matrikelnummer)[modulId] || "Keine Note";
@@ -49,13 +47,14 @@ export default {
 };
 </script>
 
+
 <style scoped>
 @import "@/assets/styles.css";
 
 body {
   font-family: Arial, sans-serif;
   background-color: var(--background-color);
-  color: var(--text-color-inv);
+  color: var(--text-color);
   margin: 0;
   padding: 0;
 }
@@ -63,7 +62,11 @@ body {
 .noten-uebersicht-container {
   width: 80%;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 20px auto;
+  padding: 20px;
+  background: var(--background-light);
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
@@ -76,18 +79,31 @@ h1 {
 table {
   width: 100%;
   margin-top: 20px;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 6px;
 }
 
 th, td {
-  padding: 8px;
-  border: 1px solid #ddd;
+  padding: 12px;
+  border: 1px solid var(--secondary-color);
   text-align: center;
+  font-size: var(--font-medium);
+}
+
+th {
+  background: var(--primary-color);
+  color: white;
+}
+
+td {
+  background: var(--background-light);
 }
 
 .print-button {
-  font-size: 16px;
-  padding: 6px 8px;
-  background-color: var(--primary-color);
+  font-size: 18px;
+  padding: 10px;
+  background-color: var(--accent-color);
   color: white;
   border: none;
   border-radius: 50%;
@@ -96,6 +112,7 @@ th, td {
   position: absolute;
   top: 10px;
   right: 10px;
+  transition: background 0.3s ease;
 }
 
 .print-button:hover {
@@ -105,6 +122,17 @@ th, td {
 @media (max-width: 600px) {
   .noten-uebersicht-container {
     width: 90%;
+    padding: 15px;
+  }
+  
+  table {
+    font-size: var(--font-small);
+  }
+
+  .print-button {
+    top: 5px;
+    right: 5px;
+    padding: 8px;
   }
 }
 </style>
