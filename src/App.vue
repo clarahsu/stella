@@ -151,6 +151,15 @@ html, body {
   min-height: 100vh;
 }
 
+main {
+  flex: 1; /* Hauptinhalt nimmt den Platz zwischen Header und Footer ein */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* Abstand, damit die Maske nicht an den Rand gedrückt wird */
+}
+
 /* Menüleiste */
 .navbar {
   background-color: var(--primary-color);
@@ -158,6 +167,7 @@ html, body {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   position: relative;
+  z-index: 10;
 }
 
 /* Container für Menü */
@@ -332,12 +342,22 @@ html, body {
 /* Footer-Balken */
 .footer {
   background-color: var(--primary-color);
-  padding: 15px;
+  padding: 10px 0;
   text-align: center;
   color: var(--text-color);
   font-size: var(--font-small);
   width: 100%;
-  margin-top: auto;
+  margin: 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box; /* Berechnet Padding mit ein */
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden; /* Verhindert horizontales Scrollen */
 }
 
 h1 {
