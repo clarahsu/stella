@@ -40,27 +40,26 @@
         <td v-for="tag in wochentage" :key="tag" :class="{ slot: true, filled: isKursInSlot(tag, zeit) }">
           <!-- Kursanzeige -->
           <div v-if="isKursInSlot(tag, zeit)" class="kurs-info" :style="{ backgroundColor: getKursFarbe(tag, zeit) }">
-            <p class="kurs-titel">{{ getKursInfo(tag, zeit).name }}</p>
+            <p class="kurs-titel">{{ truncateText(getKursInfo(tag, zeit).name) }}</p>
             <p class="kurs-raum">{{ getKursInfo(tag, zeit).raum }}</p>
           </div>
         </td>
-        <td class="slot">
-          <div v-if="getTermineInSlot(tag, zeit).length" class="termin-container">
-            <div
-                v-for="kurs in getTermineInSlot(tag, zeit)"
-                :key="kurs.name + kurs.termin + kurs.uhrzeit"
-                class="kurs-info"
-                :style="{ backgroundColor: kurs.farbe, width: `calc(100% / ${getTermineInSlot(tag, zeit).length})` }"
-            >
-              <p class="kurs-titel">{{ kurs.name }}</p>
-              <p class="kurs-raum" v-if="kurs.raum">{{ kurs.raum }}</p>
-            </div>
-          </div>
-        </td>
-
       </tr>
       </tbody>
     </table>
+
+    <!-- Popup für Bearbeiten & Löschen -->
+    <div v-if="selectedTermin" class="popup">
+      <h3>Termin bearbeiten</h3>
+      <input v-model="selectedTermin.name" placeholder="Kursname" />
+      <input v-model="selectedTermin.raum" placeholder="Raum" />
+      <input type="color" v-model="selectedTermin.farbe" />
+
+      <button @click="saveTermin">Speichern</button>
+      <button @click="deleteTermin">Löschen</button>
+      <button @click="closePopup">Abbrechen</button>
+    </div>
+
   </div>
 </template>
 
@@ -75,10 +74,7 @@ export default {
     const wochentage = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
     const zeitslots = ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00"];
 
-    // Reaktive Daten für benutzerdefinierte Termine
     const benutzerTermine = ref([]);
-
-    // Eingabeformular für neuen Termin
     const neuerTermin = ref({
       name: "",
       raum: "",
@@ -89,12 +85,10 @@ export default {
 
     const colorInput = ref(null);
 
-    // Methode zur Farbauswahl über Klick auf Kreis
     const openColorPicker = () => {
       colorInput.value.click();
     };
 
-    // Methoden zur Terminverwaltung
     const addTermin = () => {
       if (neuerTermin.value.name) {
         benutzerTermine.value.push({ ...neuerTermin.value });
@@ -129,6 +123,46 @@ export default {
       ];
     };
 
+    const selectedTermin = ref(null);
+
+    const editTermin = (kurs) => {
+      selectedTermin.value = { ...kurs }; // Kopie des Objekts zur Bearbeitung
+    };
+
+    const saveTermin = () => {
+      const index = benutzerTermine.value.findIndex(
+          (t) => t.name === selectedTermin.value.name && t.termin === selectedTermin.value.termin && t.uhrzeit === selectedTermin.value.uhrzeit
+      );
+      if (index !== -1) {
+        benutzerTermine.value[index].name = selectedTermin.value.name;
+        benutzerTermine.value[index].raum = selectedTermin.value.raum;
+        benutzerTermine.value[index].farbe = selectedTermin.value.farbe;
+      }
+      closePopup();
+    };
+
+    const deleteTermin = () => {
+      const confirmDelete = window.confirm("Möchtest du diesen Termin wirklich löschen?");
+      if (confirmDelete) {
+        benutzerTermine.value = benutzerTermine.value.filter(
+            (t) => !(t.name === selectedTermin.value.name && t.termin === selectedTermin.value.termin && t.uhrzeit === selectedTermin.value.uhrzeit)
+        );
+        closePopup();
+      }
+    };
+
+    const closePopup = () => {
+      selectedTermin.value = null; // Popup schließen
+    };
+
+    // Methode zum Abkürzen des Titels mit "..."
+    const truncateText = (text) => {
+      const maxLength = 20; // Maximale Länge des Titels
+      if (text.length > maxLength) {
+        return text.substring(0, maxLength) + "...";
+      }
+      return text;
+    };
 
     return {
       wochentage,
@@ -142,6 +176,12 @@ export default {
       getTermineInSlot,
       colorInput,
       openColorPicker,
+      selectedTermin,
+      editTermin,
+      saveTermin,
+      deleteTermin,
+      closePopup,
+      truncateText
     };
   },
 };
@@ -151,6 +191,7 @@ export default {
 .stundenplan-container {
   text-align: center;
   margin-top: 20px;
+  margin-bottom: 40px; /* Abstand zum Footer hinzugefügt */
 }
 
 h1 {
@@ -220,6 +261,7 @@ h1 {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: center;
+  width: 120px; /* Feste Spaltenbreite */
 }
 
 .slot {
@@ -242,6 +284,9 @@ h1 {
 
 .kurs-titel {
   font-weight: bold;
+  overflow: hidden; /* Verhindert, dass der Text über das Element hinausgeht */
+  text-overflow: ellipsis; /* Zeigt "..." an */
+  max-width: 100%; /* Maximale Breite für den Text */
 }
 
 .kurs-raum {
@@ -253,5 +298,28 @@ h1 {
   width: 100%;
   height: 100%;
 }
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  z-index: 1000;
+}
+
+.popup button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.popup button:nth-child(1) { background: #28a745; color: white; }
+.popup button:nth-child(2) { background: #dc3545; color: white; }
+.popup button:nth-child(3) { background: #ccc; }
 
 </style>

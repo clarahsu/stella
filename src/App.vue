@@ -167,6 +167,7 @@ main {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   position: relative;
+  z-index: 10;
 }
 
 /* Container für Menü */
@@ -346,9 +347,17 @@ main {
   color: var(--text-color);
   font-size: var(--font-small);
   width: 100%;
-  margin-top: auto;
-  position: relative;
+  margin: 0;
+  position: fixed;
   bottom: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box; /* Berechnet Padding mit ein */
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden; /* Verhindert horizontales Scrollen */
 }
 
 h1 {
