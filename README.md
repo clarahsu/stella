@@ -26,6 +26,5 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - Stundenplanüberschneidungen
 - Stundenplanformat
 - Zusammenführen und Vereinheitlichen des Designs (Farben, Schriftgrößen)
-- Kurse anlegen
 - Prüfungen hinzufügen
 - ...
