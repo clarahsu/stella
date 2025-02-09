@@ -1,17 +1,17 @@
 <template>
   <div class="kursuebersicht-container">
-    <h1>Kursübersicht</h1>
-    <p>Hier findest du eine Übersicht aller verfügbaren Kurse.</p>
+    <h1>Kurs- und Prüfungsübersicht</h1>
+    <p>Hier findest du eine Übersicht aller verfügbaren Kurse und Prüfungen.</p>
 
     <!-- Button zum Öffnen des Formulars -->
     <button v-if="userRole === 'dozentin'" @click="toggleFormular" class="erstellen-button">
-      {{ formularOffen ? "Formular schließen" : "Neuen Kurs erstellen" }}
+      {{ formularOffen ? "Formular schließen" : "Kurs/Prüfung erstellen" }}
     </button>
 
     <!-- Formular für die Kurserstellung -->
     <div v-if="formularOffen" class="kurs-formular">
       <h2>Kurs erstellen</h2>
-      <input v-model="neuerKurs.name" placeholder="Kursname" />
+      <input v-model="neuerKurs.name" placeholder="Kurs-/Prüfungsname" />
       <input v-model="neuerKurs.beschreibung" placeholder="Beschreibung" />
       <input v-model="neuerKurs.dozentin" placeholder="Dozentin" />
       <input v-model="neuerKurs.raum" placeholder="Raum" />
@@ -36,7 +36,7 @@
         <option>16:00</option>
       </select>
 
-      <input v-model="neuerKurs.umfang" placeholder="Umfang (Stunden)" />
+      <input v-model="neuerKurs.umfang" placeholder="Umfang (Leistungspunkte)" />
       <button @click="erstellenKurs" class="speichern-button">Speichern</button>
     </div>
 
