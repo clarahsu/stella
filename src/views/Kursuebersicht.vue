@@ -34,6 +34,7 @@
         <option>12:00</option>
         <option>14:00</option>
         <option>16:00</option>
+        <option>18:00</option>
       </select>
 
       <input v-model="neuerKurs.umfang" placeholder="Umfang (Leistungspunkte)" />
@@ -187,7 +188,7 @@ export default {
 .kursuebersicht-container {
   text-align: center;
   margin-top: 20px;
-  padding-bottom: 10%; /* Platz für Footer hinzufügen */
+  padding-bottom: 5%; /* Platz für Footer hinzufügen */
 }
 
 h1 {

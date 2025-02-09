@@ -191,7 +191,7 @@ export default {
 .stundenplan-container {
   text-align: center;
   margin-top: 20px;
-  margin-bottom: 40px; /* Abstand zum Footer hinzugefügt */
+  margin-bottom: 5%;
 }
 
 h1 {

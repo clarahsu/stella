@@ -53,16 +53,14 @@ export default {
 
 .container {
   background: var(--background-color);
-  padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  width: 400px;
   text-align: left;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 40px; 
+  margin-top: 10%;
 }
 
 h1 {

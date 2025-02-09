@@ -37,8 +37,8 @@ export default {
     const authStore = useAuthStore();
 
     const isLoggedIn = computed(() => !!authStore.userRole);
-    const isSpaceStudentin = computed(() => authStore.userRole === "space-studentin");
-    const isSpaceDozentin = computed(() => authStore.userRole === "space-dozentin");
+    const isSpaceStudentin = computed(() => authStore.userRole === "studentin");
+    const isSpaceDozentin = computed(() => authStore.userRole === "dozentin");
 
     console.log(authStore.userRole)
     console.log("Auth Store:", authStore);
