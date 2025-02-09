@@ -6,8 +6,11 @@ import { useAuthStore } from '@/stores/useAuthStore'
 import Immatrikulation from '../views/Immatrikulation.vue';
 import Dokumente from "@/views/Dokumente.vue";
 import Noteneingabe from '@/views/Noteneingabe.vue'
-import Notenüebersicht from '@/views/Notenuebersicht.vue'
 import Notenuebersicht from '@/views/Notenuebersicht.vue'
+import DozentenListe from "@/views/DozentenListe.vue";
+import DozentenProfil from "@/views/DozentenProfil.vue";
+import ProfilEditor from "@/views/ProfilEditor.vue";
+
 
 const routes = [
   {
@@ -36,7 +39,7 @@ const routes = [
     path: '/dokumente',
     name: 'Dokumente',
     component: Dokumente,
-    meta: { requiresAuth: true } // Authentifizierung für Kursübersicht
+    meta: { requiresAuth: true } // Authentifizierung für Dokumente
   },
   {
     path: '/immatrikulation',
@@ -55,23 +58,38 @@ const routes = [
     component: Notenuebersicht,
     meta: { requiresAuth: true }
   },
-]
+  {
+    path: "/dozentenliste",
+    name: "DozentenListe", 
+    component: DozentenListe
+  },
+  {
+    path: "/profil/:id", 
+    name: "DozentenProfil", 
+    component: DozentenProfil
+  },
+  {
+    path: "/profil/:id/edit", 
+    name: "ProfilEditor", 
+    component: ProfilEditor
+  },
+];
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
 
-// Route Guard: Überprüft, ob der Benutzer eingeloggt ist
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
 
-  // Wenn die Route "requiresAuth" erfordert und der Benutzer nicht eingeloggt ist
+
   if (to.meta.requiresAuth && !authStore.getIsAuthenticated) {
-    next('/') // Leite den Benutzer zur Startseite um
+    next('/') 
   } else {
-    next() // Lass den Benutzer die Route betreten
+    next() 
   }
 })
 
 export default router
+

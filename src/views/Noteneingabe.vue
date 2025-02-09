@@ -106,11 +106,10 @@
 <style scoped>
 @import "@/assets/styles.css";
 
-
 body {
     font-family: Arial, sans-serif;
     background-color: var(--background-color);
-    color: var(--text-color-inv);
+    color: var(--text-color);
     margin: 0;
     padding: 0;
     display: flex;
@@ -124,12 +123,11 @@ body {
     max-width: 600px; 
     margin: 0 auto; 
     padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background: var(--background-light);
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center; 
 }
-
 
 h1 {
     font-size: var(--font-title);
@@ -144,26 +142,27 @@ table {
 
 th, td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--secondary-color);
     text-align: center;
 }
 
 select, input {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 6px;
     font-size: var(--font-medium);
 }
 
 button {
-    padding: 8px 12px;
-    background: var(--primary-color);
-    color: white;
+    padding: 10px 14px;
+    background: var(--accent-color);
+    color: var(--text-color-inv);
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: var(--font-medium);
+    transition: background 0.3s ease;
     margin: 5px;
 }
 
@@ -176,10 +175,10 @@ button:hover {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: white;
+    background: var(--background-light);
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
     max-width: 400px;
 }

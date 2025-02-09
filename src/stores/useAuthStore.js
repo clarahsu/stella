@@ -51,3 +51,4 @@ export const useAuthStore = defineStore('authStore', {
         getUserRole: (state) => state.userRole, // Rolle des Nutzers abrufbar
     }
 });
+

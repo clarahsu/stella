@@ -109,6 +109,8 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  min-height: calc(100vh - 120px);
+  background-color: var(--background-color);
   width: 100%;
   max-width: 600px;
   margin: auto;
@@ -119,7 +121,7 @@ export default {
 
 
 .container {
-  background: white;
+  background: var(--background-color);
   padding: 20px 40px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -134,24 +136,26 @@ export default {
 }
 
 input, select, button {
-  width: 100%; /* Alle Elemente gleich lang */
-  padding: 10px; /* Einheitlicher Innenabstand */
-  margin: 5px 0; /* Gleichmäßiger Abstand */
-  border: 1px solid #ccc;
+  width: 100%; 
+  padding: 10px; 
+  margin: 5px 0; 
+  border: 1px solid var(--secondary-color);
   border-radius: 5px;
-  box-sizing: border-box; /* Verhindert, dass Padding/Borders die Größe ändern */
-  display: block; /* Stellt sicher, dass jedes Element eine eigene Zeile bekommt */
+  box-sizing: border-box; 
+  display: block; 
+  font-size: var(--font-medium);
 }
 
 button {
-  background: #28a745;
-  color: white;
+  background: var(--accent-color);
+  color: var(--text-color-inv); 
   font-weight: bold;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 button:hover {
-  background: #218838;
+  background: var(--accent-dark);
 }
 
 
@@ -160,7 +164,7 @@ input[type="file"] {
 }
 
 p {
-  font-size: 14px;
-  color: #555;
+  font-size: var(--font-small);
+  color: var(--text-header);
 }
 </style>
