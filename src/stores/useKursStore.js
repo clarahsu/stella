@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useKursStore = defineStore("kursStore", {
     state: () => ({
         angemeldeteKurse: [], // Liste der angemeldeten Kurse
-        alleKurse: [
+        alleKurse: [ // Beispielkurse
             {
                 id: 1,
                 name: "Alte Geschichte",
@@ -37,33 +37,44 @@ export const useKursStore = defineStore("kursStore", {
                 umfang: "10 CP",
                 farbe: "#e74c3c",
             },
-        ], // Beispielkurse
+        ],
     }),
 
     actions: {
-        // Einen Kurs anmelden
+        // Kurs anmelden
         anmelden(kurs) {
             if (!this.angemeldeteKurse.find((k) => k.id === kurs.id)) {
                 this.angemeldeteKurse.push(kurs);
             }
         },
 
-        // Einen Kurs abmelden
+        // Kurs abmelden
         abmelden(kursId) {
             this.angemeldeteKurse = this.angemeldeteKurse.filter((k) => k.id !== kursId);
         },
 
-        // Prüfen, ob ein Kurs angemeldet ist
+        // Prüfen, ob man in einem Kurs angemeldet ist
         isAngemeldet(kursId) {
             return this.angemeldeteKurse.some((k) => k.id === kursId);
         },
+
+        // Neuen Kurs erstellen
+        addKurs(kurs) {
+            if (!this.alleKurse) {
+                this.alleKurse = []; // Falls `alleKurse` nicht existiert, initialisiere es
+            }
+            this.alleKurse.push(kurs);
+            console.log("📌 Neuer Kurs wurde gespeichert:", kurs);
+            console.log("📌 Alle Kurse nach Speichern:", this.alleKurse);
+        },
+
     },
 
     getters: {
-        // Alle angemeldeten Kurse abrufen
+        // Gibt die angemeldeten Kurse zurück
         getAngemeldeteKurse: (state) => state.angemeldeteKurse,
 
-        // Alle verfügbaren Kurse abrufen
+        // Gibt alle Kurse zurück
         getAlleKurse: (state) => state.alleKurse,
     },
 });

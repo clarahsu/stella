@@ -2,6 +2,7 @@
     /* Farben */
     --primary-color: #1a2b6dff;  /* Hauptfarbe */
     --secondary-color: #5dade2ff; /* Sekundärfarbe */
+    --secondary-hover: #2e8bc0;
     --accent-color: #ffd700ff; /* Akzentfarbe*/
     --accent-dark: #caaa02ff;
     --text-color: white; /* Textfarbe normal */

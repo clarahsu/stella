@@ -3,13 +3,48 @@
     <h1>Kursübersicht</h1>
     <p>Hier findest du eine Übersicht aller verfügbaren Kurse.</p>
 
+    <!-- Button zum Öffnen des Formulars -->
+    <button v-if="userRole === 'dozentin'" @click="toggleFormular" class="erstellen-button">
+      {{ formularOffen ? "Formular schließen" : "Neuen Kurs erstellen" }}
+    </button>
+
+    <!-- Formular für die Kurserstellung -->
+    <div v-if="formularOffen" class="kurs-formular">
+      <h2>Kurs erstellen</h2>
+      <input v-model="neuerKurs.name" placeholder="Kursname" />
+      <input v-model="neuerKurs.beschreibung" placeholder="Beschreibung" />
+      <input v-model="neuerKurs.dozentin" placeholder="Dozentin" />
+      <input v-model="neuerKurs.raum" placeholder="Raum" />
+
+      <!-- Auswahl für Termin -->
+      <select v-model="neuerKurs.termin">
+        <option disabled value="">Bitte einen Termin wählen</option>
+        <option>Montag</option>
+        <option>Dienstag</option>
+        <option>Mittwoch</option>
+        <option>Donnerstag</option>
+        <option>Freitag</option>
+      </select>
+
+      <!-- Auswahl für Uhrzeit -->
+      <select v-model="neuerKurs.uhrzeit">
+        <option disabled value="">Bitte eine Uhrzeit wählen</option>
+        <option>08:00</option>
+        <option>10:00</option>
+        <option>12:00</option>
+        <option>14:00</option>
+        <option>16:00</option>
+      </select>
+
+      <input v-model="neuerKurs.umfang" placeholder="Umfang (Stunden)" />
+      <button @click="erstellenKurs" class="speichern-button">Speichern</button>
+    </div>
+
     <ul>
       <li v-for="kurs in sortedKurse" :key="kurs.id" class="kurs-item">
-        <!-- Kurs-Titel und dynamischer Button -->
         <div class="kurs-header">
           <div @click="toggleDetails(kurs.id)" class="kurs-title">
             <h2>{{ kurs.name }}</h2>
-            <!-- Pfeil-Icon -->
             <span class="arrow-icon" :class="{ rotated: kurs.isOpen }">▼</span>
           </div>
           <button
@@ -26,44 +61,54 @@
           <p><strong>Dozentin:</strong> {{ kurs.dozentin }}</p>
           <p><strong>Raum:</strong> {{ kurs.raum }}</p>
           <p><strong>Termin:</strong> {{ kurs.termin }}</p>
-          <p><strong>Umfang:</strong> {{ kurs.umfang }}</p>
-          <p>
-            <a
-                v-if="kurs.modulbeschreibung"
-                :href="kurs.modulbeschreibung"
-                target="_blank"
-                class="modul-link"
-            >
-              Modulbeschreibung
-            </a>
-          </p>
+          <p><strong>Uhrzeit:</strong> {{ kurs.uhrzeit }}</p>
+          <p><strong>Umfang:</strong> {{ kurs.umfang }} Stunden</p>
         </div>
       </li>
     </ul>
   </div>
 </template>
 
+
 <script>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useKursStore } from "@/stores/useKursStore";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default {
   name: "Kursuebersicht",
   setup() {
-    const kursStore = useKursStore(); // Zugriff auf den Kurs-Store
+    const kursStore = useKursStore();
+    const authStore = useAuthStore();
 
-    const kurse = computed(() => kursStore.getAlleKurse); // Alle verfügbaren Kurse
+    const userRole = computed(() => authStore.userRole);
+    const kurse = computed(() => kursStore.getAlleKurse);
+    const formularOffen = ref(false);
+
     const sortedKurse = computed(() =>
         [...kurse.value].sort((a, b) => a.name.localeCompare(b.name))
-    ); // Alphabetisch sortiert
+    );
 
-    // Methoden
     const toggleDetails = (kursId) => {
-      const kurs = kurse.value.find(k => k.id === kursId);
-      if (kurs) {
-        kurs.isOpen = !kurs.isOpen;
+      // Prüfen, ob das Array existiert und befüllt ist
+      if (!kurse.value || kurse.value.length === 0) {
+        console.error("Kursliste ist nicht definiert oder leer!");
+        return;
       }
+
+      // Den Kurs anhand der ID finden
+      const kursIndex = kurse.value.findIndex(k => k.id === kursId);
+
+      // Falls der Kurs nicht gefunden wurde, Fehler ausgeben
+      if (kursIndex === -1) {
+        console.error(`Kurs mit ID ${kursId} nicht gefunden!`);
+        return;
+      }
+
+      // isOpen umschalten
+      kurse.value[kursIndex].isOpen = !kurse.value[kursIndex].isOpen;
     };
+
 
     const toggleAnmeldung = (kurs) => {
       if (kursStore.isAngemeldet(kurs.id)) {
@@ -77,9 +122,59 @@ export default {
 
     const isAngemeldet = (kursId) => kursStore.isAngemeldet(kursId);
 
+    // Neues Kurs-Objekt
+    const neuerKurs = ref({
+      name: "",
+      beschreibung: "",
+      dozentin: authStore.user, // Automatische Zuweisung der Dozentin
+      raum: "",
+      termin: "",
+      uhrzeit: "",
+      umfang: "",
+    });
+
+    // Kursformular ein-/ausblenden
+    const toggleFormular = () => {
+      formularOffen.value = !formularOffen.value;
+    };
+
+    // Kurs erstellen
+    const erstellenKurs = () => {
+      if (neuerKurs.value.name) {
+        kursStore.addKurs({
+          id: Date.now(),
+          name: neuerKurs.value.name,
+          beschreibung: neuerKurs.value.beschreibung,
+          dozentin: neuerKurs.value.dozentin || "Unbekannt",
+          raum: neuerKurs.value.raum,
+          termin: neuerKurs.value.termin,
+          uhrzeit: neuerKurs.value.uhrzeit,
+          umfang: neuerKurs.value.umfang,
+          isOpen: false,
+        });
+
+        neuerKurs.value = {
+          name: "",
+          beschreibung: "",
+          dozentin: authStore.user,
+          raum: "",
+          termin: "",
+          uhrzeit: "",
+          umfang: "",
+        };
+
+        formularOffen.value = false;
+      }
+    };
+
     return {
       kurse,
       sortedKurse,
+      userRole,
+      neuerKurs,
+      formularOffen,
+      toggleFormular,
+      erstellenKurs,
       toggleDetails,
       toggleAnmeldung,
       isAngemeldet,
@@ -92,6 +187,7 @@ export default {
 .kursuebersicht-container {
   text-align: center;
   margin-top: 20px;
+  padding-bottom: 10%; /* Platz für Footer hinzufügen */
 }
 
 h1 {
@@ -129,12 +225,6 @@ ul {
   cursor: pointer;
 }
 
-.kurs-title h2 {
-  font-size: 1.5rem;
-  color: var(--primary-color);
-  margin: 0;
-}
-
 .arrow-icon {
   font-size: 1.2rem;
   margin-left: 10px;
@@ -151,8 +241,62 @@ ul {
   color: #555;
 }
 
-.kurs-details p {
-  margin: 5px 0;
+.erstellen-button {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.erstellen-button:hover {
+  background-color: var(--secondary-hover);
+}
+
+.kurs-formular {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.kurs-formular input,
+.kurs-formular select {
+  display: block;
+  width: 90%;
+  margin: 10px auto;
+  padding: 8px;
+  font-size: 1rem; /* Gleiche Schriftgröße wie die input-Felder */
+  border: 1px solid #ccc; /* Gleiche Randfarbe wie bei den input-Feldern */
+  border-radius: 5px; /* Gleiche abgerundeten Ecken wie bei den input-Feldern */
+  background-color: #fff; /* Weißer Hintergrund wie die Eingabefelder */
+  color: var(--text-color-inv); /* Textfarbe anpassen */
+  box-sizing: border-box;
+}
+
+.kurs-formular select:focus {
+  outline: none;
+  border-color: var(--secondary-color); /* Ändere die Randfarbe beim Fokus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional: Füge einen Schlagschatten beim Fokus hinzu */
+}
+
+
+.speichern-button {
+  background-color: var(--accent-color);
+  color: var(--text-color-inv);
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.speichern-button:hover {
+  background-color: var(--accent-dark);
 }
 
 /* Dynamischer Button */
@@ -166,7 +310,7 @@ ul {
 }
 
 .anmelden-button:hover {
-  background-color: var(--secondary-color);
+  background-color: var(--secondary-hover);
 }
 
 .abmelden-button {
