@@ -31,12 +31,13 @@
       <!-- Burger-Menü Navigation -->
       <nav v-if="menuOpen" class="burger-menu">
         <router-link to="/" @click="closeMenu">Home</router-link>
-        <router-link v-if="isAuthenticated" to="/about" @click="closeMenu">Campuspläne</router-link>
-        <router-link v-if="isAuthenticated" to="/kurs-und-pruefungsuebersicht" @click="closeMenu">Kurs- und Prüfungsübersicht</router-link>
+        <router-link v-if="isAuthenticated" to="/kursuebersicht" @click="closeMenu">Kurs- und Prüfungsübersicht</router-link>
         <router-link v-if="isAuthenticated" to="/stundenplan" @click="closeMenu">Stundenplan</router-link>
+        <router-link v-if="isAuthenticated" to="/dozentenliste" @click="closeMenu">Dozierenden-Profile</router-link>
+        <router-link v-if="isAuthenticated" to="/dokumente" @click="closeMenu">Persönliche Dokumente</router-link>
         <router-link v-if="isAuthenticated" to="/noteneingabe" @click="closeMenu">Noteneingabe</router-link>
         <router-link v-if="isAuthenticated" to="notenuebersicht" @click="closeMenu">Notenübersicht</router-link>
-        <router-link v-if="isAuthenticated" to="/dozentenliste" @click="closeMenu">Dozierende</router-link>
+        <router-link v-if="isAuthenticated" to="/about" @click="closeMenu">Campuspläne</router-link>
       </nav>
     </header>
 

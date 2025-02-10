@@ -9,23 +9,32 @@
       <router-link to="/immatrikulation" class="immatrikulation-button">Immatrikulation</router-link>
     </template>
 
-    <!-- Inhalt für space-studentin -->
+    <!-- Inhalt für Studentinnen -->
     <template v-else-if="isSpaceStudentin">
       <h1>Willkommen zurück!</h1>
-      <div class="box-container">
-        <router-link to="/stundenplan" class="info-box">📅 Stundenplan</router-link>
+      <div class="box-grid studentin">
+        <router-link to="/kursuebersicht" class="info-box">Kurs- und Prüfungsübersicht</router-link>
+        <router-link to="/notenuebersicht" class="info-box">Notenübersicht</router-link>
+        <router-link to="/dokumente" class="info-box">Persönliche Dokumente</router-link>
+        <router-link to="/stundenplan" class="info-box">Stundenplan</router-link>
+        <router-link to="/dozentenliste" class="info-box">Dozierenden-Profile</router-link>
+        <router-link to="/about" class="info-box">Campuspläne</router-link>
       </div>
     </template>
 
-    <!-- Inhalt für space-dozentin -->
+    <!-- Inhalt für Dozentinnen -->
     <template v-else-if="isSpaceDozentin">
       <h1>Willkommen zurück!</h1>
-      <div class="box-container">
-        <router-link to="/kursuebersicht" class="info-box">📚 Kursübersicht</router-link>
+      <div class="box-grid dozentin">
+        <router-link to="/kursuebersicht" class="info-box">Kurs- und Prüfungsübersicht</router-link>
+        <router-link to="/noteineingabe" class="info-box">Noteneingabe</router-link>
+        <router-link to="/dozentenliste" class="info-box">Dozierenden-Profile</router-link>
+        <router-link to="/about" class="info-box">Campuspläne</router-link>
       </div>
     </template>
   </div>
 </template>
+
 
 <script>
 import {computed} from "vue";
@@ -79,26 +88,36 @@ export default {
   background-color: var(--accent-dark);
 }
 
-/* Boxen für eingeloggte Nutzer */
-.box-container {
-  display: flex;
-  justify-content: center;
+/* Boxen-Grid */
+.box-grid {
+  display: grid;
+  gap: 20px;
   margin-top: 20px;
+}
+
+/* 3 Spalten für Studentinnen */
+.box-grid.studentin {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 2 Spalten für Dozentinnen */
+.box-grid.dozentin {
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .info-box {
   padding: 15px 30px;
-  background-color: var(--primary-color);
-  color: var(--text-color-inv);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
   text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: var(--font-medium);
   border-radius: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
+  text-align: center;
 }
 
 .info-box:hover {
-  transform: scale(1.05);
+  background-color: var(--primary-color);
 }
 </style>
