@@ -18,12 +18,12 @@
           <div v-if="!isAuthenticated" class="login-container">
             <input v-model="username" type="text" placeholder="Benutzername" />
             <input v-model="password" type="password" placeholder="Passwort" />
-            <button @click="handleLogin">Anmelden</button>
+            <button class="button" @click="handleLogin">Anmelden</button>
           </div>
 
           <div v-else class="logout-container">
             <span class="welcome-text">Willkommen, {{ user }}!</span>
-            <button @click="handleLogout">Abmelden</button>
+            <button class="button" @click="handleLogout">Abmelden</button>
           </div>
         </div>
       </div>
@@ -238,15 +238,17 @@ main {
   padding: 5px;
 }
 
-.login-container button {
-  padding: 6px 10px;
+.button {
+  padding: 8px 12px;
+  font-size: var(--font-medium);
   background-color: var(--accent-color);
   color: var(--text-color-inv);
   border: none;
   cursor: pointer;
+  border-radius: 5px;
 }
 
-.login-container button:hover {
+.button:hover {
   background: var(--accent-dark);
 }
 
@@ -257,21 +259,9 @@ main {
   gap: 10px;
 }
 
-.logout-container button {
-  padding: 6px 10px;
-  font-size: var(--font-medium);
-  background-color: var(--accent-color);
-  color: var(--text-color-inv);
-  border: none;
-  cursor: pointer;
-}
-
-.logout-container button:hover {
-  background: var(--accent-dark);
-}
-
 .welcome-text {
   color: var(--text-color);
+  font-size: var(--font-medium);
 }
 
 /* Burger-Menü */
@@ -290,6 +280,7 @@ main {
   padding: 10px;
   text-align: center;
   color: var(--text-color);
+  font-size: var(--font-medium);
   text-decoration: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
@@ -312,7 +303,7 @@ main {
   color: var(--text-color-inv);
   border: none;
   border-radius: 50%;
-  font-size: 24px;
+  font-size: var(--font-title);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -348,7 +339,7 @@ main {
   padding: 10px;
   margin: 5px 0;
   background: var(--primary-color);
-  color: white;
+  color: var(--text-color);
   border: none;
   cursor: pointer;
   border-radius: 4px;
@@ -366,16 +357,14 @@ main {
   color: var(--text-color);
   font-size: var(--font-small);
   width: 100%;
-  margin: 0;
   bottom: 0;
   left: 0;
-  right: 0;
-  box-sizing: border-box; /* Berechnet Padding mit ein */
 }
 
 body {
   margin: 0;
   overflow-x: hidden; /* Verhindert horizontales Scrollen */
+  font-family: 'Roboto', sans-serif;
 }
 
 h1 {

@@ -78,7 +78,6 @@ export default {
   background-color: var(--accent-color);
   color: var(--text-color-inv);
   text-decoration: none;
-  font-weight: bold;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s;
@@ -118,6 +117,6 @@ export default {
 }
 
 .info-box:hover {
-  background-color: var(--primary-color);
+  background-color: var(--secondary-hover);
 }
 </style>
