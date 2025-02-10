@@ -1,7 +1,7 @@
 <template>
   <div class="kursuebersicht-container">
     <h1>Kurs- und Prüfungsübersicht</h1>
-    <p>Hier findest du eine Übersicht aller verfügbaren Kurse und Prüfungen.</p>
+    <p>Hier befindet sich eine Übersicht aller verfügbaren Kurse und Prüfungen.</p>
 
     <!-- Button zum Öffnen des Formulars -->
     <button v-if="userRole === 'dozentin'" @click="toggleFormular" class="erstellen-button">
@@ -48,7 +48,7 @@
             <h2>{{ kurs.name }}</h2>
             <span class="arrow-icon" :class="{ rotated: kurs.isOpen }">▼</span>
           </div>
-          <button
+          <button v-if="userRole === 'studentin'"
               :class="isAngemeldet(kurs.id) ? 'abmelden-button' : 'anmelden-button'"
               @click.stop="toggleAnmeldung(kurs)"
           >

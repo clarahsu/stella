@@ -50,9 +50,9 @@
       <button class="faq-button" @click="toggleFAQ">?</button>
       <div v-if="faqOpen" class="faq-menu">
         <h3>Hilfe & FAQ</h3>
+        <button @click="showFAQ('tutorial')">Video-Tutorial</button>
         <button @click="showFAQ('navigation')">Navigation</button>
         <button @click="showFAQ('anmeldung')">Anmeldung</button>
-        <button @click="showFAQ('sonstiges')">Sonstiges</button>
 
         <div v-if="currentFAQ">
           <h4>{{ currentFAQTitle }}</h4>
@@ -119,9 +119,9 @@ export default {
 
     // FAQ-Texte
     const faqData = {
+      tutorial: { title: "Video-Tutorial", text: "Hier kommen Sie zu einem Video-Tutorial für das Kursplanungssystem Stella." },
       navigation: { title: "Navigation", text: "Hier erfahren Sie, wie Sie sich auf unserer Seite bewegen." },
       anmeldung: { title: "Anmeldung", text: "Hier finden Sie Informationen zur Anmeldung und Registrierung." },
-      sonstiges: { title: "Sonstiges", text: "Weitere häufig gestellte Fragen werden hier beantwortet." },
     };
 
     const currentFAQTitle = computed(() => (currentFAQ.value ? faqData[currentFAQ.value].title : ""));
