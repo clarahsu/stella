@@ -22,9 +22,9 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ### To Dos
 - bei Abmeldung: Weiterleitung auf Startseite
 - Gestaltung Startseite
-- Profilseiten anlegen
-- Stundenplanüberschneidungen
-- Stundenplanformat
+(- Stundenplanüberschneidungen)
+(- Stundenplanformat)
 - Zusammenführen und Vereinheitlichen des Designs (Farben, Schriftgrößen)
-- Prüfungen hinzufügen
+- Dozentenliste, Noteneingabe Footer fixen
+- Bestätigungsmaske von Noteneingabe für Prüfungs-/Kurserstellung übernehmen
 - ...
