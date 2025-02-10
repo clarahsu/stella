@@ -32,11 +32,11 @@
       <nav v-if="menuOpen" class="burger-menu">
         <router-link to="/" @click="closeMenu">Home</router-link>
         <router-link v-if="isAuthenticated" to="/kursuebersicht" @click="closeMenu">Kurs- und Prüfungsübersicht</router-link>
-        <router-link v-if="isAuthenticated" to="/stundenplan" @click="closeMenu">Stundenplan</router-link>
+        <router-link v-if="userRole === 'studentin'" to="/stundenplan" @click="closeMenu">Stundenplan</router-link>
         <router-link v-if="isAuthenticated" to="/dozentenliste" @click="closeMenu">Dozierenden-Profile</router-link>
-        <router-link v-if="isAuthenticated" to="/dokumente" @click="closeMenu">Persönliche Dokumente</router-link>
-        <router-link v-if="isAuthenticated" to="/noteneingabe" @click="closeMenu">Noteneingabe</router-link>
-        <router-link v-if="isAuthenticated" to="notenuebersicht" @click="closeMenu">Notenübersicht</router-link>
+        <router-link v-if="userRole === 'studentin'" to="/dokumente" @click="closeMenu">Persönliche Dokumente</router-link>
+        <router-link v-if="userRole === 'dozentin'" to="/noteneingabe" @click="closeMenu">Noteneingabe</router-link>
+        <router-link v-if="userRole === 'studentin'" to="/notenuebersicht" @click="closeMenu">Notenübersicht</router-link>
         <router-link v-if="isAuthenticated" to="/about" @click="closeMenu">Campuspläne</router-link>
       </nav>
     </header>
@@ -69,70 +69,84 @@
 </template>
 
 <script>
+import { computed, ref } from "vue";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export default {
-  name: "App",
-  data() {
-    return {
-      username: "",
-      password: "",
-      menuOpen: false, // Burger-Menü Status
-      faqOpen: false, // FAQ-Menü Status
-      currentFAQ: null, // Aktuelle FAQ-Anzeige
-      faqData: {
-        navigation: {
-          title: "Navigation",
-          text: "Hier erfahren Sie, wie Sie sich auf unserer Seite bewegen.",
-        },
-        anmeldung: {
-          title: "Anmeldung",
-          text: "Hier finden Sie Informationen zur Anmeldung und Registrierung.",
-        },
-        sonstiges: {
-          title: "Sonstiges",
-          text: "Weitere häufig gestellte Fragen werden hier beantwortet.",
-        },
-      },
+  setup() {
+    const authStore = useAuthStore();
+
+    // Reaktive Daten
+    const username = ref("");
+    const password = ref("");
+    const menuOpen = ref(false);
+    const faqOpen = ref(false);
+    const currentFAQ = ref(null);
+
+    // Computed Properties
+    const isAuthenticated = computed(() => authStore.getIsAuthenticated);
+    const user = computed(() => authStore.getUser);
+    const userRole = computed(() => authStore.userRole);
+
+    // Methoden
+    const handleLogin = async () => {
+      await authStore.login(username.value, password.value);
     };
-  },
-  computed: {
-    isAuthenticated() {
-      return useAuthStore().getIsAuthenticated;
-    },
-    user() {
-      return useAuthStore().getUser;
-    },
-    currentFAQTitle() {
-      return this.currentFAQ ? this.faqData[this.currentFAQ].title : "";
-    },
-    currentFAQText() {
-      return this.currentFAQ ? this.faqData[this.currentFAQ].text : "";
-    },
-  },
-  methods: {
-    handleLogin() {
-      useAuthStore().login(this.username, this.password);
-    },
-    handleLogout() {
-      useAuthStore().logout();
-      this.closeMenu();
-    },
-    toggleMenu() {
-      this.menuOpen = !this.menuOpen;
-    },
-    closeMenu() {
-      this.menuOpen = false;
-    },
-    toggleFAQ() {
-      this.faqOpen = !this.faqOpen;
-      if (!this.faqOpen) {
-        this.currentFAQ = null;
+
+    const handleLogout = () => {
+      authStore.logout();
+      menuOpen.value = false;
+    };
+
+    const toggleMenu = () => {
+      menuOpen.value = !menuOpen.value;
+    };
+
+    const closeMenu = () => {
+      menuOpen.value = false;
+    };
+
+    const toggleFAQ = () => {
+      faqOpen.value = !faqOpen.value;
+      if (!faqOpen.value) {
+        currentFAQ.value = null;
       }
-    },
-    showFAQ(topic) {
-      this.currentFAQ = topic;
-    },
+    };
+
+    const showFAQ = (topic) => {
+      currentFAQ.value = topic;
+    };
+
+    // FAQ-Texte
+    const faqData = {
+      navigation: { title: "Navigation", text: "Hier erfahren Sie, wie Sie sich auf unserer Seite bewegen." },
+      anmeldung: { title: "Anmeldung", text: "Hier finden Sie Informationen zur Anmeldung und Registrierung." },
+      sonstiges: { title: "Sonstiges", text: "Weitere häufig gestellte Fragen werden hier beantwortet." },
+    };
+
+    const currentFAQTitle = computed(() => (currentFAQ.value ? faqData[currentFAQ.value].title : ""));
+    const currentFAQText = computed(() => (currentFAQ.value ? faqData[currentFAQ.value].text : ""));
+
+    console.log("UserRole:", userRole.value);
+
+    return {
+      username,
+      password,
+      menuOpen,
+      faqOpen,
+      currentFAQ,
+      isAuthenticated,
+      user,
+      userRole,
+      handleLogin,
+      handleLogout,
+      toggleMenu,
+      closeMenu,
+      toggleFAQ,
+      showFAQ,
+      currentFAQTitle,
+      currentFAQText,
+    };
   },
 };
 </script>
