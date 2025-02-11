@@ -107,26 +107,26 @@
 @import "@/assets/styles.css";
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 .noten-eingabe-container {
-    width: 50%; 
-    max-width: 600px; 
-    margin: 0 auto; 
-    padding: 20px;
-    background: var(--background-light);
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center; 
+  width: 50%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 5%;
+  background: var(--background-light);
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 h1 {

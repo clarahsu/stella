@@ -71,6 +71,7 @@ export default {
   max-width: 400px;
   margin: 20px auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding-bottom: 80px;
 }
 
 .profil-header {
@@ -96,7 +97,7 @@ button {
 }
 
 button:hover {
-  background-color: var(--accent-dark);
+  background-color: var(--text-muted);
 }
 
 input, textarea {
@@ -123,6 +124,6 @@ button.profilbild-button {
 }
 
 button.profilbild-button:hover {
-  background-color: #e60000;
+  background-color: var(--text-muted);
 }
 </style>

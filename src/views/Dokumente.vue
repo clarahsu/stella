@@ -1,6 +1,6 @@
 <template>
   <div class="dokumente-container">
-    <h1>Dokumente</h1>
+    <h1>Persönliche Dokumente</h1>
     <center><p>Hier finden sie alle relevanten Bescheinigungen für ihr Studium.</p></center>
     <ul>
       <li><a href="https://example.com/dummy1.pdf" target="_blank">Bescheinigung nach §9 BAföG [PDF]</a></li>
@@ -23,7 +23,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: 20px; /* Abstand oben verringert */
+  margin: 20px; /* Abstand oben verringert */
+  padding-bottom: 60px;
 }
 
 ul {
@@ -37,11 +38,12 @@ li {
 
 a {
   text-decoration: none;
-  color: #007bff;
+  color: var(--primary-color);
   font-weight: bold;
 }
 
 a:hover {
   text-decoration: underline;
+  color: var(--primary-hover)
 }
 </style>
