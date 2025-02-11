@@ -1,5 +1,8 @@
 <template>
   <div class="profil-container">
+    <button class="back-button" @click="zurueck">
+      ← Zurück zur Übersicht
+    </button>
     <div class="profil-header">
       <img :src="dozentin.profilbild || defaultImage" alt="Dozent Profilbild" class="profilbild" />
       <h1>{{ dozentin.name }}</h1>
@@ -15,19 +18,28 @@
       </div>
     </div>
 
-    <button class="kontaktieren" @click="kontaktieren">Kontaktieren</button>
-    <button class="bearbeiten" @click="bearbeiten">Profil bearbeiten</button>
+    <button class="kontaktieren" v-if="userRole === 'studentin'" @click="kontaktieren">Kontaktieren</button>
+    <button class="bearbeiten" v-if="userRole === 'dozentin'" @click="bearbeiten">Profil bearbeiten</button>
   </div>
 </template>
 
 <script>
 import { useNotenStore } from "@/stores/useNotenStore";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/useAuthStore";
+import {computed} from "vue";
 
 export default {
   setup() {
     const notenStore = useNotenStore();
     const router = useRouter();
+    const authStore = useAuthStore();
+    const userRole = computed(() => authStore.userRole);
+
+    const zurueck = () => {
+      router.push("/dozentenliste");
+    };
+
     const dozentin = notenStore.getDozentinById("1");
 
     const defaultImage = 'https://th.bing.com/th/id/R.c564ae6358d40e47eb291f717bf53b56?rik=lTPuAW48qj9orQ&riu=http%3a%2f%2fwww.interiorgas.com%2fwp-content%2fuploads%2fblank-profile-picture-300x300.png&ehk=5drVIh9jSZOVq4E6%2fN3JZCmR8XCkRLOHl6%2botKIIemY%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1';
@@ -41,10 +53,12 @@ export default {
     };
 
     return {
+      zurueck,
       dozentin,
       kontaktieren,
       bearbeiten,
-      defaultImage
+      defaultImage,
+      userRole,
     };
   },
 };
@@ -54,11 +68,13 @@ export default {
 .profil-container {
   background-color: var(--background-color);
   color: var(--text-color-inv);
-  padding: 20px;
-  border-radius: 8px;
+  padding-bottom: 80px;
   max-width: 800px;
   margin: 20px auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+  margin: 2%;
 }
 
 .profil-header {

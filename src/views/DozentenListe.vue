@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper">
     <div class="container">
-      <h1>Dozentenübersicht</h1>
+      <h1>Dozierenden-Profile</h1>
+      <p>Hier finden Sie eine Auflistung der Dozierenden der Space University. Wenn Sie mehr über eine Person erfahren möchten, klicken Sie auf das Profil.</p>
       <div v-if="dozenten.length > 0">
         <ul>
           <li v-for="dozent in dozenten" :key="dozent.id">
@@ -30,7 +31,6 @@ export default {
     return {
       dozenten: [
         { id: 1, name: 'Space Dozentin', fachbereich: 'Astronomie', profilbild: '' },
-        { id: 2, name: 'Prof. Max Mustermann', fachbereich: 'Weltraumkulturen', profilbild: '' },
         { id: 3, name: 'Dr. Lisa Stern', fachbereich: 'Lunare Mathematik', profilbild: '' },
         { id: 4, name: 'Dr. Michael Fischer', fachbereich: 'Alte Geschichte', profilbild: '' },
         { id: 5, name: 'Dr. Dallas Skerritt', fachbereich: 'Marsianische Linguistik', profilbild: '' },
@@ -48,19 +48,19 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  width: 100%;
   background-color: var(--background-color);
 }
 
 .container {
   background: var(--background-color);
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   text-align: left;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   margin-top: 10%;
+  width: 100%;
 }
 
 h1 {
@@ -71,6 +71,8 @@ h1 {
 ul {
   list-style-type: none;
   padding: 0;
+  padding-bottom: 30%;
+  width: 100%;
 }
 
 .dozent-item {
@@ -101,11 +103,11 @@ ul {
 }
 
 .dozent-name:hover {
-  color: var(--accent-color);
+  color: var(--primary-hover);
 }
 
 .dozent-info p {
   font-size: var(--font-small);
-  color: var(--text-muted);
+  color: var(--text-color-inv);
 }
 </style>
