@@ -10,35 +10,44 @@
 
     <!-- Formular für die Kurserstellung -->
     <div v-if="formularOffen" class="kurs-formular">
-      <h2>Kurs erstellen</h2>
-      <input v-model="neuerKurs.name" placeholder="Kurs-/Prüfungsname" />
-      <input v-model="neuerKurs.beschreibung" placeholder="Beschreibung" />
-      <input v-model="neuerKurs.dozentin" placeholder="Dozentin" />
-      <input v-model="neuerKurs.raum" placeholder="Raum" />
+      <h2>Kurs/Prüfung erstellen</h2>
+      <form>
+        <input v-model="neuerKurs.name" placeholder="Kurs-/Prüfungsname" required @keyup.enter="erstellenKurs"/>
+        <input v-model="neuerKurs.beschreibung" placeholder="Beschreibung" required @keyup.enter="erstellenKurs"/>
+        <input v-model="neuerKurs.dozentin" placeholder="Dozentin" required @keyup.enter="erstellenKurs"/>
+        <input v-model="neuerKurs.raum" placeholder="Raum" required @keyup.enter="erstellenKurs"/>
 
-      <!-- Auswahl für Termin -->
-      <select v-model="neuerKurs.termin">
-        <option disabled value="">Bitte einen Termin wählen</option>
-        <option>Montag</option>
-        <option>Dienstag</option>
-        <option>Mittwoch</option>
-        <option>Donnerstag</option>
-        <option>Freitag</option>
-      </select>
+        <select v-model="neuerKurs.art" required @keyup.enter="erstellenKurs">
+          <option disabled value="">Bitte Art der Veranstaltung angeben</option>
+          <option>Kurs</option>
+          <option>Prüfung</option>
+        </select>
 
-      <!-- Auswahl für Uhrzeit -->
-      <select v-model="neuerKurs.uhrzeit">
-        <option disabled value="">Bitte eine Uhrzeit wählen</option>
-        <option>08:00</option>
-        <option>10:00</option>
-        <option>12:00</option>
-        <option>14:00</option>
-        <option>16:00</option>
-        <option>18:00</option>
-      </select>
+        <!-- Auswahl für Termin -->
+        <select v-model="neuerKurs.termin" required @keyup.enter="erstellenKurs">
+          <option disabled value="">Bitte einen Termin wählen</option>
+          <option>Montag</option>
+          <option>Dienstag</option>
+          <option>Mittwoch</option>
+          <option>Donnerstag</option>
+          <option>Freitag</option>
+        </select>
 
-      <input v-model="neuerKurs.umfang" placeholder="Umfang (Leistungspunkte)" />
-      <button @click="erstellenKurs" class="speichern-button">Speichern</button>
+        <!-- Auswahl für Uhrzeit -->
+        <select v-model="neuerKurs.uhrzeit" required @keyup.enter="erstellenKurs">
+          <option disabled value="">Bitte eine Uhrzeit wählen</option>
+          <option>08:00</option>
+          <option>10:00</option>
+          <option>12:00</option>
+          <option>14:00</option>
+          <option>16:00</option>
+          <option>18:00</option>
+        </select>
+
+        <input v-model="neuerKurs.umfang" placeholder="Umfang (Leistungspunkte)" required @keyup.enter="erstellenKurs"/>
+        <button type="submit" @click="erstellenKurs" class="speichern-button">Speichern</button>
+
+      </form>
     </div>
 
     <ul>
@@ -63,7 +72,17 @@
           <p><strong>Raum:</strong> {{ kurs.raum }}</p>
           <p><strong>Termin:</strong> {{ kurs.termin }}</p>
           <p><strong>Uhrzeit:</strong> {{ kurs.uhrzeit }}</p>
-          <p><strong>Umfang:</strong> {{ kurs.umfang }} Stunden</p>
+          <p v-if="kurs.umfang"><strong>Umfang:</strong> {{ kurs.umfang }} Stunden</p>
+          <a v-if="kurs.modulbeschreibung" :href="kurs.modulbeschreibung" target="_blank">Modulbeschreibung als PDF ansehen</a>
+          <div v-if="userRole === 'dozentin'">
+            <p><strong>Teilnahmeliste:</strong></p>
+            <ol v-if="getTeilnehmer(kurs.id).length > 0">
+              <li v-for="teilnehmer in getTeilnehmer(kurs.id)" :key="teilnehmer">
+                {{ teilnehmer }}
+              </li>
+            </ol>
+            <p v-else>Keine Teilnehmenden eingetragen.</p>
+          </div>
         </div>
       </li>
     </ul>
@@ -82,35 +101,36 @@ export default {
     const kursStore = useKursStore();
     const authStore = useAuthStore();
 
+    // Benutzerrolle reaktiv abrufen
     const userRole = computed(() => authStore.userRole);
+
+    // Alle Kurse abrufen
     const kurse = computed(() => kursStore.getAlleKurse);
+
+    // Formulareinblendung für das Erstellen eines neuen Kurses
     const formularOffen = ref(false);
 
+    // Alphabetisch sortierte Kurse
     const sortedKurse = computed(() =>
         [...kurse.value].sort((a, b) => a.name.localeCompare(b.name))
     );
 
+    // Toggle für Kursdetails: Wir suchen den Kurs anhand der ID und schalten den Boolean isOpen um
     const toggleDetails = (kursId) => {
-      // Prüfen, ob das Array existiert und befüllt ist
       if (!kurse.value || kurse.value.length === 0) {
         console.error("Kursliste ist nicht definiert oder leer!");
         return;
       }
-
-      // Den Kurs anhand der ID finden
       const kursIndex = kurse.value.findIndex(k => k.id === kursId);
-
-      // Falls der Kurs nicht gefunden wurde, Fehler ausgeben
       if (kursIndex === -1) {
         console.error(`Kurs mit ID ${kursId} nicht gefunden!`);
         return;
       }
-
-      // isOpen umschalten
-      kurse.value[kursIndex].isOpen = !kurse.value[kursIndex].isOpen;
+      // Aktualisiere das Kursobjekt in alleKurse
+      kursStore.alleKurse[kursIndex].isOpen = !kursStore.alleKurse[kursIndex].isOpen;
     };
 
-
+    // Umschalten der Kursanmeldung
     const toggleAnmeldung = (kurs) => {
       if (kursStore.isAngemeldet(kurs.id)) {
         kursStore.abmelden(kurs.id);
@@ -121,25 +141,27 @@ export default {
       }
     };
 
+    // Prüfen, ob ein Kurs angemeldet ist
     const isAngemeldet = (kursId) => kursStore.isAngemeldet(kursId);
 
-    // Neues Kurs-Objekt
+    // Neues Kurs-Objekt für das Erstellungsformular
     const neuerKurs = ref({
       name: "",
       beschreibung: "",
-      dozentin: authStore.user, // Automatische Zuweisung der Dozentin
+      dozentin: authStore.user, // Zuweisung der aktuell angemeldeten Dozentin
       raum: "",
+      art: "",
       termin: "",
       uhrzeit: "",
       umfang: "",
     });
 
-    // Kursformular ein-/ausblenden
+    // Formular ein-/ausblenden
     const toggleFormular = () => {
       formularOffen.value = !formularOffen.value;
     };
 
-    // Kurs erstellen
+    // Neuen Kurs erstellen
     const erstellenKurs = () => {
       if (neuerKurs.value.name) {
         kursStore.addKurs({
@@ -148,17 +170,20 @@ export default {
           beschreibung: neuerKurs.value.beschreibung,
           dozentin: neuerKurs.value.dozentin || "Unbekannt",
           raum: neuerKurs.value.raum,
+          art: neuerKurs.value.art,
           termin: neuerKurs.value.termin,
           uhrzeit: neuerKurs.value.uhrzeit,
           umfang: neuerKurs.value.umfang,
           isOpen: false,
         });
 
+        // Formular zurücksetzen
         neuerKurs.value = {
           name: "",
           beschreibung: "",
           dozentin: authStore.user,
           raum: "",
+          art: "",
           termin: "",
           uhrzeit: "",
           umfang: "",
@@ -168,6 +193,8 @@ export default {
       }
     };
 
+    // Gib den Getter zur Teilnehmerliste direkt zurück
+    // (Der Getter getTeilnehmer ist in deinem Store als Funktion definiert, die einen kursId-Parameter erwartet)
     return {
       kurse,
       sortedKurse,
@@ -179,6 +206,7 @@ export default {
       toggleDetails,
       toggleAnmeldung,
       isAngemeldet,
+      getTeilnehmer: kursStore.getTeilnehmer,
     };
   },
 };
@@ -188,17 +216,28 @@ export default {
 .kursuebersicht-container {
   text-align: center;
   margin-top: 20px;
+  margin-left: 5%;
+  margin-right: 5%;
   padding-bottom: 5%; /* Platz für Footer hinzufügen */
 }
 
 h1 {
-  font-size: 2rem;
-  color: #333;
+  font-size: var(--font-title);
+  color: var(--text-header);
 }
 
 p {
-  font-size: 1.2rem;
-  color: #666;
+  font-size: var(--font-medium);
+  color: var(--text-muted);
+}
+
+a {
+  font-size: var(--font-medium);
+  color: var(--primary-color);
+}
+
+a:hover {
+  color: var(--primary-hover);
 }
 
 ul {
