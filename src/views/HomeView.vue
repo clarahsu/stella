@@ -27,7 +27,7 @@
       <h1>Willkommen zurück!</h1>
       <div class="box-grid dozentin">
         <router-link to="/kursuebersicht" class="info-box">Kurs- und Prüfungsübersicht</router-link>
-        <router-link to="/noteineingabe" class="info-box">Noteneingabe</router-link>
+        <router-link to="/noteneingabe" class="info-box">Noteneingabe</router-link>
         <router-link to="/dozentenliste" class="info-box">Dozierenden-Profile</router-link>
         <router-link to="/about" class="info-box">Campuspläne</router-link>
       </div>
