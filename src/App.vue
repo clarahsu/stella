@@ -9,15 +9,17 @@
         </button>
 
         <!-- Logo -->
-        <div class="logo-container">
-          <img src="@/assets/logo-hci-white.png" alt="Logo" class="logo" />
-        </div>
+        <router-link to="/">
+          <div class="logo-container">
+            <img src="@/assets/logo-hci-white.png" alt="Logo" class="logo" />
+          </div>
+        </router-link>
 
         <!-- Login-/Logout-Formular oben rechts -->
         <div class="auth-container">
           <div v-if="!isAuthenticated" class="login-container">
-            <input v-model="username" type="text" placeholder="Benutzername" />
-            <input v-model="password" type="password" placeholder="Passwort" />
+            <input v-model="username" type="text" placeholder="Benutzername" @keyup.enter="handleLogin"/>
+            <input v-model="password" type="password" placeholder="Passwort" @keyup.enter="handleLogin"/>
             <button class="button" @click="handleLogin">Anmelden</button>
           </div>
 
@@ -63,6 +65,9 @@
 
     <!-- Footer-Balken als visueller Abschluss -->
     <footer class="footer">
+      <div v-if="isAuthenticated" class="suche">
+        <input v-model="suche" type="text" placeholder="Suche" @keyup.enter="handleLogin"/>
+      </div>
       <p>&copy; 2025 Space University</p>
     </footer>
   </div>
@@ -71,10 +76,12 @@
 <script>
 import { computed, ref } from "vue";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useRouter } from "vue-router";
 
 export default {
   setup() {
     const authStore = useAuthStore();
+    const router = useRouter();
 
     // Reaktive Daten
     const username = ref("");
@@ -82,6 +89,7 @@ export default {
     const menuOpen = ref(false);
     const faqOpen = ref(false);
     const currentFAQ = ref(null);
+    const suche = ref("")
 
     // Computed Properties
     const isAuthenticated = computed(() => authStore.getIsAuthenticated);
@@ -96,7 +104,9 @@ export default {
     const handleLogout = () => {
       authStore.logout();
       menuOpen.value = false;
+      router.push("/"); // Weiterleitung zur Startseite
     };
+
 
     const toggleMenu = () => {
       menuOpen.value = !menuOpen.value;
@@ -132,6 +142,7 @@ export default {
     return {
       username,
       password,
+      //suche,
       menuOpen,
       faqOpen,
       currentFAQ,
@@ -203,6 +214,7 @@ main {
 .logo-container {
   position: absolute;
   left: 50%;
+  top: -15%;
   transform: translateX(-50%);
 }
 
@@ -289,6 +301,15 @@ main {
   background: rgba(255, 255, 255, 0.2);
 }
 
+.suche {
+  position: absolute;
+  bottom: 23px;
+  right: 25px;
+  text-align: center;
+  display: flex;
+  gap: 10px;
+}
+
 /* FAQ-Button */
 .faq-container {
   position: fixed;
@@ -346,7 +367,7 @@ main {
 }
 
 .faq-menu button:hover {
-  background: var(--secondary-color);
+  background: var(--primary-hover);
 }
 
 /* Footer-Balken */
@@ -359,6 +380,7 @@ main {
   width: 100%;
   bottom: 0;
   left: 0;
+  position: fixed;
 }
 
 body {
