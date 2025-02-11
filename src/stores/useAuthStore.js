@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('authStore', {
         login(username, password) {
             let role = null;
 
-            if (username === 'space-studentin' && password === 'SpaceG1rls') {
+            if (username === 'space-studentin' && password === 'Sp4ceGirls') {
                 role = "studentin";
             } else if (username === 'space-dozentin' && password === 'Sp4ceGirls') {
                 role = "dozentin";
