@@ -116,10 +116,9 @@ export default {
 
 .container {
   background: var(--background-color);
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   text-align: left;
   display: flex;
+  padding-bottom: 80px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -131,14 +130,15 @@ input, select, button {
   margin: 5px 0;
   border: 1px solid var(--secondary-color);
   border-radius: 5px;
-  box-sizing: border-box; 
-  display: block; 
+  box-sizing: border-box;
+  display: block;
   font-size: var(--font-medium);
 }
 
 button {
   background: var(--accent-color);
-  color: var(--text-color-inv); 
+  color: var(--text-color-inv);
+  border: var(--accent-color);
   font-weight: bold;
   cursor: pointer;
   transition: background 0.3s ease;
