@@ -69,7 +69,17 @@
           <p><strong>Raum:</strong> {{ kurs.raum }}</p>
           <p><strong>Termin:</strong> {{ kurs.termin }}</p>
           <p><strong>Uhrzeit:</strong> {{ kurs.uhrzeit }}</p>
-          <p v-if="kurs.umfang"><strong>Umfang:</strong> {{ kurs.umfang }} Stunden</p>
+          <p v-if="kurs.umfang"><strong>Umfang:</strong> {{ kurs.umfang }}</p>
+          <a v-if="kurs.modulbeschreibung" :href="kurs.modulbeschreibung" target="_blank">Modulbeschreibung als PDF ansehen</a>
+          <div v-if="userRole === 'dozentin'">
+            <p><strong>Teilnahmeliste:</strong></p>
+            <ol v-if="getTeilnehmer(kurs.id).length > 0">
+              <li v-for="teilnehmer in getTeilnehmer(kurs.id)" :key="teilnehmer">
+                {{ teilnehmer }}
+              </li>
+            </ol>
+            <p v-else>Keine Teilnehmenden eingetragen.</p>
+          </div>
         </div>
       </li>
     </ul>
@@ -132,7 +142,8 @@ export default {
       erstellenKurs,
       confirmDelete,
       deleteKurs,
-      showDeleteModal
+      showDeleteModal,
+      getTeilnehmer: kursStore.getTeilnehmer,
     };
   }
 };
