@@ -60,7 +60,7 @@
   </tbody>
   </table>
 
-  <!-- Popup für Bearbeiten & Löschen -->
+  <!-- Popup für Löschen -->
   <div v-if="selectedTermin" class="popup">
     <h3>Diesen Termin löschen?</h3>
     <button @click="deleteTermin">Löschen</button>

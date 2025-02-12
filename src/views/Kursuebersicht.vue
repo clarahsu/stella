@@ -3,28 +3,22 @@
     <h1>Kurs- und Prüfungsübersicht</h1>
     <p>Hier befindet sich eine Übersicht aller verfügbaren Kurse und Prüfungen.</p>
 
-    <!-- Button zum Öffnen des Formulars -->
     <button v-if="userRole === 'dozentin'" @click="toggleFormular" class="erstellen-button">
       {{ formularOffen ? "Formular schließen" : "Kurs/Prüfung erstellen" }}
     </button>
 
-    <!-- Formular für die Kurserstellung -->
     <div v-if="formularOffen" class="kurs-formular">
       <h2>Kurs/Prüfung erstellen</h2>
-      <form>
-        <input v-model="neuerKurs.name" placeholder="Kurs-/Prüfungsname" required @keyup.enter="erstellenKurs"/>
-        <input v-model="neuerKurs.beschreibung" placeholder="Beschreibung" required @keyup.enter="erstellenKurs"/>
-        <input v-model="neuerKurs.dozentin" placeholder="Dozentin" required @keyup.enter="erstellenKurs"/>
-        <input v-model="neuerKurs.raum" placeholder="Raum" required @keyup.enter="erstellenKurs"/>
-
-        <select v-model="neuerKurs.art" required @keyup.enter="erstellenKurs">
+      <form @submit.prevent="erstellenKurs">
+        <input v-model="neuerKurs.name" placeholder="Kurs-/Prüfungsname" required />
+        <input v-model="neuerKurs.beschreibung" placeholder="Beschreibung" required />
+        <input v-model="neuerKurs.raum" placeholder="Raum" required />
+        <select v-model="neuerKurs.art" required>
           <option disabled value="">Bitte Art der Veranstaltung angeben</option>
           <option>Kurs</option>
           <option>Prüfung</option>
         </select>
-
-        <!-- Auswahl für Termin -->
-        <select v-model="neuerKurs.termin" required @keyup.enter="erstellenKurs">
+        <select v-model="neuerKurs.termin" required>
           <option disabled value="">Bitte einen Termin wählen</option>
           <option>Montag</option>
           <option>Dienstag</option>
@@ -32,9 +26,7 @@
           <option>Donnerstag</option>
           <option>Freitag</option>
         </select>
-
-        <!-- Auswahl für Uhrzeit -->
-        <select v-model="neuerKurs.uhrzeit" required @keyup.enter="erstellenKurs">
+        <select v-model="neuerKurs.uhrzeit" required>
           <option disabled value="">Bitte eine Uhrzeit wählen</option>
           <option>08:00</option>
           <option>10:00</option>
@@ -43,11 +35,17 @@
           <option>16:00</option>
           <option>18:00</option>
         </select>
-
-        <input v-model="neuerKurs.umfang" placeholder="Umfang (Leistungspunkte)" required @keyup.enter="erstellenKurs"/>
-        <button type="submit" @click="erstellenKurs" class="speichern-button">Speichern</button>
-
+        <input v-model="neuerKurs.umfang" placeholder="Umfang (Leistungspunkte)" required />
+        <button type="submit" class="speichern-button">Speichern</button>
       </form>
+    </div>
+
+    <div v-if="showDeleteModal" class="modal">
+      <div class="modal-content">
+        <p>Wollen Sie diesen Kurs wirklich löschen?</p>
+        <button @click="deleteKurs">Löschen</button>
+        <button @click="showDeleteModal = false">Abbrechen</button>
+      </div>
     </div>
 
     <ul>
@@ -58,14 +56,13 @@
             <span class="arrow-icon" :class="{ rotated: kurs.isOpen }">▼</span>
           </div>
           <button v-if="userRole === 'studentin'"
-              :class="isAngemeldet(kurs.id) ? 'abmelden-button' : 'anmelden-button'"
-              @click.stop="toggleAnmeldung(kurs)"
-          >
+                  :class="isAngemeldet(kurs.id) ? 'abmelden-button' : 'anmelden-button'"
+                  @click.stop="toggleAnmeldung(kurs)">
             {{ isAngemeldet(kurs.id) ? "Abmelden" : "Anmelden" }}
           </button>
+          <button v-if="userRole === 'dozentin'" @click="confirmDelete(kurs.id)" class="delete-button">Löschen</button>
         </div>
 
-        <!-- Kursdetails -->
         <div v-if="kurs.isOpen" class="kurs-details">
           <p><strong>Kurzbeschreibung:</strong> {{ kurs.beschreibung }}</p>
           <p><strong>Dozentin:</strong> {{ kurs.dozentin }}</p>
@@ -73,22 +70,11 @@
           <p><strong>Termin:</strong> {{ kurs.termin }}</p>
           <p><strong>Uhrzeit:</strong> {{ kurs.uhrzeit }}</p>
           <p v-if="kurs.umfang"><strong>Umfang:</strong> {{ kurs.umfang }} Stunden</p>
-          <a v-if="kurs.modulbeschreibung" :href="kurs.modulbeschreibung" target="_blank">Modulbeschreibung als PDF ansehen</a>
-          <div v-if="userRole === 'dozentin'">
-            <p><strong>Teilnahmeliste:</strong></p>
-            <ol v-if="getTeilnehmer(kurs.id).length > 0">
-              <li v-for="teilnehmer in getTeilnehmer(kurs.id)" :key="teilnehmer">
-                {{ teilnehmer }}
-              </li>
-            </ol>
-            <p v-else>Keine Teilnehmenden eingetragen.</p>
-          </div>
         </div>
       </li>
     </ul>
   </div>
 </template>
-
 
 <script>
 import { ref, computed } from "vue";
@@ -100,117 +86,59 @@ export default {
   setup() {
     const kursStore = useKursStore();
     const authStore = useAuthStore();
-
-    // Benutzerrolle reaktiv abrufen
     const userRole = computed(() => authStore.userRole);
-
-    // Alle Kurse abrufen
     const kurse = computed(() => kursStore.getAlleKurse);
-
-    // Formulareinblendung für das Erstellen eines neuen Kurses
+    const sortedKurse = computed(() => [...kurse.value].sort((a, b) => a.name.localeCompare(b.name)));
     const formularOffen = ref(false);
+    const neuerKurs = ref({ name: "", beschreibung: "", raum: "", art: "", termin: "", uhrzeit: "", umfang: "" });
+    const showDeleteModal = ref(false);
+    const kursToDelete = ref(null);
 
-    // Alphabetisch sortierte Kurse
-    const sortedKurse = computed(() =>
-        [...kurse.value].sort((a, b) => a.name.localeCompare(b.name))
-    );
-
-    // Toggle für Kursdetails: Wir suchen den Kurs anhand der ID und schalten den Boolean isOpen um
+    const toggleFormular = () => (formularOffen.value = !formularOffen.value);
     const toggleDetails = (kursId) => {
-      if (!kurse.value || kurse.value.length === 0) {
-        console.error("Kursliste ist nicht definiert oder leer!");
-        return;
-      }
-      const kursIndex = kurse.value.findIndex(k => k.id === kursId);
-      if (kursIndex === -1) {
-        console.error(`Kurs mit ID ${kursId} nicht gefunden!`);
-        return;
-      }
-      // Aktualisiere das Kursobjekt in alleKurse
-      kursStore.alleKurse[kursIndex].isOpen = !kursStore.alleKurse[kursIndex].isOpen;
+      const kurs = kurse.value.find(k => k.id === kursId);
+      if (kurs) kurs.isOpen = !kurs.isOpen;
     };
-
-    // Umschalten der Kursanmeldung
-    const toggleAnmeldung = (kurs) => {
-      if (kursStore.isAngemeldet(kurs.id)) {
-        kursStore.abmelden(kurs.id);
-        alert(`Du hast dich vom Kurs "${kurs.name}" abgemeldet.`);
-      } else {
-        kursStore.anmelden(kurs);
-        alert(`Du hast dich für den Kurs "${kurs.name}" angemeldet.`);
-      }
-    };
-
-    // Prüfen, ob ein Kurs angemeldet ist
+    const toggleAnmeldung = (kurs) => kursStore.isAngemeldet(kurs.id) ? kursStore.abmelden(kurs.id) : kursStore.anmelden(kurs);
     const isAngemeldet = (kursId) => kursStore.isAngemeldet(kursId);
-
-    // Neues Kurs-Objekt für das Erstellungsformular
-    const neuerKurs = ref({
-      name: "",
-      beschreibung: "",
-      dozentin: authStore.user, // Zuweisung der aktuell angemeldeten Dozentin
-      raum: "",
-      art: "",
-      termin: "",
-      uhrzeit: "",
-      umfang: "",
-    });
-
-    // Formular ein-/ausblenden
-    const toggleFormular = () => {
-      formularOffen.value = !formularOffen.value;
-    };
-
-    // Neuen Kurs erstellen
     const erstellenKurs = () => {
-      if (neuerKurs.value.name) {
-        kursStore.addKurs({
-          id: Date.now(),
-          name: neuerKurs.value.name,
-          beschreibung: neuerKurs.value.beschreibung,
-          dozentin: neuerKurs.value.dozentin || "Unbekannt",
-          raum: neuerKurs.value.raum,
-          art: neuerKurs.value.art,
-          termin: neuerKurs.value.termin,
-          uhrzeit: neuerKurs.value.uhrzeit,
-          umfang: neuerKurs.value.umfang,
-          isOpen: false,
-        });
-
-        // Formular zurücksetzen
-        neuerKurs.value = {
-          name: "",
-          beschreibung: "",
-          dozentin: authStore.user,
-          raum: "",
-          art: "",
-          termin: "",
-          uhrzeit: "",
-          umfang: "",
-        };
-
-        formularOffen.value = false;
-      }
+      kursStore.addKurs({ id: Date.now(), ...neuerKurs.value, isOpen: false });
+      neuerKurs.value = { name: "", beschreibung: "", raum: "", art: "", termin: "", uhrzeit: "", umfang: "" };
+      formularOffen.value = false;
     };
 
-    // Gib den Getter zur Teilnehmerliste direkt zurück
-    // (Der Getter getTeilnehmer ist in deinem Store als Funktion definiert, die einen kursId-Parameter erwartet)
+    const confirmDelete = (kursId) => {
+      kursToDelete.value = kursId;
+      showDeleteModal.value = true;
+    };
+
+    const deleteKurs = () => {
+      if (kursToDelete.value) {
+        kursStore.deleteKurs(kursToDelete.value);
+        kursToDelete.value = null;
+      }
+      showDeleteModal.value = false;
+    };
+
     return {
-      kurse,
-      sortedKurse,
       userRole,
+      sortedKurse,
       neuerKurs,
       formularOffen,
       toggleFormular,
-      erstellenKurs,
       toggleDetails,
       toggleAnmeldung,
       isAngemeldet,
-      getTeilnehmer: kursStore.getTeilnehmer,
+      erstellenKurs,
+      confirmDelete,
+      deleteKurs,
+      showDeleteModal
     };
-  },
+  }
 };
 </script>
+
+
 
 <style scoped>
 .kursuebersicht-container {
@@ -349,7 +277,20 @@ ul {
   cursor: pointer;
 }
 
+.delete-button {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 .anmelden-button:hover {
+  background-color: var(--secondary-hover);
+}
+
+delete-button:hover {
   background-color: var(--secondary-hover);
 }
 
@@ -365,4 +306,35 @@ ul {
 .abmelden-button:hover {
   background-color: #c82333;
 }
+
+.modal-content {
+  background: var(--background-color);
+  padding: 20px;
+  border-radius: 10px;
+  position: fixed;
+  top: 20%;
+  right: 35%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.modal-content button {
+  display: inline-block;  /* Sorgt dafür, dass die Buttons nebeneinander stehen */
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.modal-content button:first-of-type {
+  background-color: #dc3545;  /* Rotes Beispiel für Löschen */
+  color: white;
+}
+
+.modal-content button:last-of-type {
+  background-color: #ccc;     /* Grauer Button für Abbrechen */
+  color: #333;
+}
+
 </style>

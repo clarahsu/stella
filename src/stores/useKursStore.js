@@ -2,9 +2,9 @@ import { defineStore } from "pinia";
 
 export const useKursStore = defineStore("kursStore", {
     state: () => ({
-        angemeldeteKurse: [], // Liste der angemeldeten Kurse
+        angemeldeteKurse: [],
         teilnehmerListen: {},
-        alleKurse: [ // Beispielkurse
+        alleKurse: [
             {
                 id: 1,
                 name: "Alte Geschichte",
@@ -16,7 +16,7 @@ export const useKursStore = defineStore("kursStore", {
                 umfang: "10 CP",
                 farbe: "#f39c12",
                 modulbeschreibung: "https://example.com/dummy2.pdf",
-                teilnehmer: [] // Teilnehmerliste hinzugefügt
+                teilnehmer: []
             },
             {
                 id: 2,
@@ -81,26 +81,22 @@ export const useKursStore = defineStore("kursStore", {
     }),
 
     actions: {
-        // Kurs anmelden
         anmelden(kurs) {
             if (!this.angemeldeteKurse.find((k) => k.id === kurs.id)) {
                 this.angemeldeteKurse.push(kurs);
-                this.addTeilnehmer(kurs.id, "space-studentin"); // Füge space-studentin zur Teilnehmerliste hinzu
+                this.addTeilnehmer(kurs.id, "space-studentin");
             }
         },
 
-        // Kurs abmelden
         abmelden(kursId) {
             this.angemeldeteKurse = this.angemeldeteKurse.filter((k) => k.id !== kursId);
-            this.removeTeilnehmer(kursId, "space-studentin"); // Entferne space-studentin aus der Teilnehmerliste
+            this.removeTeilnehmer(kursId, "space-studentin");
         },
 
-        // Prüfen, ob man in einem Kurs angemeldet ist
         isAngemeldet(kursId) {
             return this.angemeldeteKurse.some((k) => k.id === kursId);
         },
 
-        // Teilnehmer zu einem Kurs hinzufügen
         addTeilnehmer(kursId, student) {
             const kurs = this.alleKurse.find(k => k.id === kursId);
             if (kurs && !kurs.teilnehmer.includes(student)) {
@@ -108,7 +104,6 @@ export const useKursStore = defineStore("kursStore", {
             }
         },
 
-        // Teilnehmer aus einem Kurs entfernen
         removeTeilnehmer(kursId, student) {
             const kurs = this.alleKurse.find(k => k.id === kursId);
             if (kurs) {
@@ -116,26 +111,19 @@ export const useKursStore = defineStore("kursStore", {
             }
         },
 
-        // Neuen Kurs erstellen
         addKurs(kurs) {
-            if (!this.alleKurse) {
-                this.alleKurse = []; // Falls `alleKurse` nicht existiert, initialisiere es
-            }
-            kurs.teilnehmer = []; // Stelle sicher, dass jeder neue Kurs eine Teilnehmerliste hat
+            kurs.teilnehmer = [];
             this.alleKurse.push(kurs);
-            console.log("📌 Neuer Kurs wurde gespeichert:", kurs);
-            console.log("📌 Alle Kurse nach Speichern:", this.alleKurse);
         },
+
+        deleteKurs(kursId) {
+            this.alleKurse = this.alleKurse.filter(kurs => kurs.id !== kursId);
+        }
     },
 
     getters: {
-        // Gibt die angemeldeten Kurse zurück
         getAngemeldeteKurse: (state) => state.angemeldeteKurse,
-
-        // Gibt alle Kurse zurück
         getAlleKurse: (state) => state.alleKurse,
-
-        // Gibt die Teilnehmer eines bestimmten Kurses zurück
         getTeilnehmer: (state) => (kursId) => {
             const kurs = state.alleKurse.find(k => k.id === kursId);
             return kurs ? kurs.teilnehmer : [];
